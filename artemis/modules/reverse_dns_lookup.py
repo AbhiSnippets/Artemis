@@ -68,10 +68,9 @@ class ReverseDNSLookup(ArtemisBase):
                     actually_triggered_tasks.append(entry)
                     self.add_task(current_task, new_task)
 
+            # Only add domains that are subdomains of the original domain
             if "original_domain" in current_task.payload_persistent:
-                if not Config.Miscellaneous.VERIFY_REVDNS_IN_SCOPE or is_subdomain(
-                    entry, current_task.payload_persistent["original_domain"]
-                ):
+                if is_subdomain(entry, current_task.payload_persistent["original_domain"]):
                     new_task = Task({"type": TaskType.NEW}, payload={"data": entry})
                     actually_triggered_tasks.append(entry)
                     self.add_task(current_task, new_task)
